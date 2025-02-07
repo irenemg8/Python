@@ -1,0 +1,5 @@
+Esto es un mensaje. Esto es otro mensaje en la misma línea. 
+Esto es un mensaje en una nueva línea.Esto es un mensaje añadido. 
+Línea añadida de un listado 
+otra línea añadida 
+Esto es un mensaje añadido. 
