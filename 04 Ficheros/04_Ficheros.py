@@ -105,6 +105,57 @@ nombre_fichero = input("¿Cómo se llama tu fichero? ")
 contar_palabras_en_fichero(nombre_fichero)
 
 
+
 """5. Escribe una función generadora que devuelva una palabra de un fichero cada vez que es llamada."""
+def generadora(nombre_fichero):
+    with open(nombre_fichero, mode="rt", encoding="utf-8") as f:
+        for linea in f:
+            for palabra in linea.split():
+                yield palabra
+
+# --- int main () ----------------
+nombre_fichero = input("¿Cómo se llama tu fichero? ")
+for palabra in generadora(nombre_fichero):
+    print(palabra)
+
+
+
+
 """5. Escribe un función que anonimice el fichero `interview.txt`. Este fichero contiene una entrevista con Trump, pero su nombre no puede aparecer y hay que cambiarlo a "Mr. X" para anonimizar el fichero. El resultado, será escrito en un fichero `anonymous.txt`."""
+def anonimalizar_fichero(fichero_entrada, fichero_salida):
+    f = open(fichero_entrada, mode="rt", encoding="utf-8")
+    texto = f.read()
+    f.close()
+    
+    contenido_anonimo = texto.replace("Trump", "Mr. X")
+    
+    f2 = open(fichero_salida, mode="wt", encoding="utf-8")
+    f2.write(contenido_anonimo)
+    f2.close()
+
+# --- int main () ----------------
+anonimalizar_fichero("interview.txt", "anonymous.txt")
+
+
+
+
 """6. Escribe un programa que lee el nombre del fichero de texto del teclado y muestra por pantalla el texto codificado de forma que sólo las letras minúsculas se sustituyen por las siguientes según el abecedario (una `a` por una `b`, una `b` por una `c`, etc.)."""
+def letras_abecedario(nombre_fichero):
+    res = ""  # Inicializamos la variable 'res' para almacenar el resultado
+    with open(nombre_fichero, mode="r", encoding="utf-8") as f:
+        for linea in f:
+            for letra in linea:
+                if letra.islower():  # Verificamos si la letra es minúscula
+                    # Obtenemos el siguiente carácter en el abecedario
+                    if letra == 'z':
+                        res += 'a'  # Si es 'z', la siguiente es 'a'
+                    else:
+                        res += chr(ord(letra) + 1)  # Incrementamos la letra
+                else:
+                    res += letra  # Si no es minúscula, dejamos la letra igual
+    return res
+
+# --- int main () ----------------
+nombre_fichero = input("¿Cómo se llama tu fichero? ")
+res = letras_abecedario(nombre_fichero)
+print(res)
