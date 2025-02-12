@@ -69,7 +69,7 @@ class Aircraft:
                 seats: A string of letters such as "ABCDEF"
                 ----- type: Tupla
         """
-        rows = [None] * (len(self.__num_rows) + 1)
+        rows = [None] * (self.__num_rows + 1)
         seats = "ABCDEF"[:self.__num_seats_per_row]
         return (rows, seats)     
        
@@ -97,14 +97,15 @@ class Airbus(Aircraft):
             get_variant(): Devuelve la variante del avión
     """
 
-    def __init__(self, registration, model, num_rows, num_seats_per_row, variant):
+    def __init__(self, registration, variant):
         """ Inicializa un avión de la marca Airbus
         Args:
-            model (str): El modelo de avión
-            num_rows (int): Número de filas del avión
-            num_seats_per_row (int): Número de asientos por fila en el avión
+            registration (str): Registro
             variant (str): Variante del avión
         """
+        model = "Airbus A319"
+        num_rows = 23
+        num_seats_per_row = 6
         super().__init__(registration, model, num_rows, num_seats_per_row)
         self.__variant = variant
 
@@ -130,14 +131,15 @@ class Boeing(Aircraft):
             get_airline(): Devuelve la aerolínea del avión
     """
 
-    def __init__(self, registration, model, num_rows, num_seats_per_row, airline):
-        """ Inicializa un avión de la marca Airbus
+    def __init__(self, registration, airline):
+        """ Inicializa un avión de la marca Boeing
         Args:
-            model (str): El modelo de avión
-            num_rows (int): Número de filas del avión
-            num_seats_per_row (int): Número de asientos por fila en el avión
+            registration (str): Registro
             airline (str): Aerolinea del avión
         """
+        model = "Boeing 777"
+        num_rows = 56
+        num_seats_per_row = 9
         super().__init__(registration, model, num_rows, num_seats_per_row)
         self.__airline = airline
 
@@ -146,4 +148,4 @@ class Boeing(Aircraft):
             Returns:
                 string: aerolinea del avión
         """
-        return self.__airline    
+        return self.__airline

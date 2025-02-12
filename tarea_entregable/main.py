@@ -17,7 +17,7 @@ def make_flights():
     f1.allocate_passenger("18F", p2.passenger_data())
     f1.allocate_passenger("18E", p3.passenger_data())
     f1.allocate_passenger("1C", p4.passenger_data())
-    f1.allocate_passenger("4D", p5.passenger_data())
+    f3.allocate_passenger("4D", p5.passenger_data())
 
     return f1, f2, f3
 
