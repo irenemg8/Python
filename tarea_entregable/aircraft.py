@@ -11,8 +11,8 @@ class Aircraft:
         Methods:
             get_registration(): Devuelve el registro
             get_model(): Devuelve el modelo de avión
-            get_num_rows(): Devuelve el numero de filas del avión
-            get_num_seats_per_row(): Devuelve el número de asientos por fila en el avión
+            seating_plan(): Devuelve una tupla con la lista de filas y los asientos por fila
+            num_seats(): Devuelve el número de asientos del avión
     """
 
 
@@ -45,90 +45,105 @@ class Aircraft:
         """
         return self.__model
     
-
+    
     def get_num_rows(self):
-        """ Esta función devuelve el número de filas del avión
+        """ Esta función devuelve el numero de filas
             Returns:
-                int: número de filas del avión
+                int: numero de filas
         """
         return self.__num_rows
     
-
+    
     def get_num_seats_per_row(self):
-        """ Esta función devuelve el número de asientos por fila del avión
+        """ Esta función devuelve el numero de asientos por fila
             Returns:
-                int: número de asientos por fila del avión
+                int: numero de asientos por fila
         """
         return self.__num_seats_per_row
-
-
+    
+    
     def seating_plan(self):
-        """Generates a seating plan for the number of rows and seats per row  -- genera una tupla con 2 valores (lista_tam_filas+1, asientos_cada_fila)
-        Returns: 
-            rows: A list of Nones (size num_rows + 1). - todos inicializados a none al principio
-            seats: A string of letters such as "ABCDEF"
+        """Generates a seating plan for the number of rows and seats per row
+            Returns: 
+                rows: A list of Nones (size num_rows + 1).
+                seats: A string of letters such as "ABCDEF"
+                ----- type: Tupla
         """
-        rows = [None] * (len(Aircraft.get_num_rows())+1)
-        seats = "ABCDEF"
-        return (rows, seats)
-
+        rows = [None] * (len(self.__num_rows) + 1)
+        seats = "ABCDEF"[:self.__num_seats_per_row]
+        return (rows, seats)     
+       
 
     def num_seats(self):
         """Calculates the number of seats
             Returns:
             seats: The number of seats
         """
-        seats = self.get_num_rows() * self.get_num_seats_per_row()
+        seats = len(self.get_num_rows()) * len(self.get_num_seats_per_row())
         return seats
 
     
    
  #----- CLASE AIRBUS ----------------------------------------------------------
 class Airbus(Aircraft):
-    def __init__(self, model, num_rows, num_seats_per_row, variant):
-        self.__model = model
-        self.__num_rows = num_rows
-        self.__num_seats_per_row = num_seats_per_row
+    """ Representación de un avión de la marca Airbus
+        Attributes:
+            model (str): El modelo de avión
+            num_rows (int): Número de filas del avión
+            num_seats_per_row (int): Número de asientos por fila en el avión
+            variant (str): Variante del avión
+
+        Methods:
+            get_variant(): Devuelve la variante del avión
+    """
+
+    def __init__(self, registration, model, num_rows, num_seats_per_row, variant):
+        """ Inicializa un avión de la marca Airbus
+        Args:
+            model (str): El modelo de avión
+            num_rows (int): Número de filas del avión
+            num_seats_per_row (int): Número de asientos por fila en el avión
+            variant (str): Variante del avión
+        """
+        super().__init__(registration, model, num_rows, num_seats_per_row)
         self.__variant = variant
 
-    
-    def get_model(self):
-        return self.__model
-    
-
-    def get_num_rows(self):
-        return self.__num_rows
-    
-
-    def get_num_seats_per_row(self):
-        return self.__num_seats_per_row
-
-
     def get_variant(self):
+        """ Esta función devuelve la variante del avión
+            Returns:
+                string: variante del avión
+        """
         return self.__variant        
         
 
 
 #----- CLASE BOEING ----------------------------------------------------------
 class Boeing(Aircraft):
-    def __init__(self, model, num_rows, num_seats_per_row, airline):
-        self.__model = model
-        self.__num_rows = num_rows
-        self.__num_seats_per_row = num_seats_per_row
+    """ Representación de un avión de la marca Boeing
+        Attributes:
+            model (str): El modelo de avión
+            num_rows (int): Número de filas del avión
+            num_seats_per_row (int): Número de asientos por fila en el avión
+            airline (str): Aerolinea del avión
+
+        Methods:
+            get_airline(): Devuelve la aerolínea del avión
+    """
+
+    def __init__(self, registration, model, num_rows, num_seats_per_row, airline):
+        """ Inicializa un avión de la marca Airbus
+        Args:
+            model (str): El modelo de avión
+            num_rows (int): Número de filas del avión
+            num_seats_per_row (int): Número de asientos por fila en el avión
+            airline (str): Aerolinea del avión
+        """
+        super().__init__(registration, model, num_rows, num_seats_per_row)
         self.__airline = airline
 
-    
-    def get_model(self):
-        return self.__model
-    
-
-    def get_num_rows(self):
-        return self.__num_rows
-    
-
-    def get_num_seats_per_row(self):
-        return self.__num_seats_per_row
-
-
     def get_airline(self):
+        """ Esta función devuelve la aerolínea del avión
+            Returns:
+                string: aerolinea del avión
+        """
         return self.__airline    
