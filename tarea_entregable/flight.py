@@ -77,15 +77,16 @@ class Flight:
             to_seat: The new seat designator
         """
         dic = self.get_seating()
-        passenger = None
+        pasajero = None
         for i in dic:
-            if i["Seat"] == from_seat:
-                passenger = i["Passenger"]
-                i["Passenger"] = None
-                break
+            if (i["Seat"] == from_seat) and (to_seat == None):
+                pasajero = i["Passenger"]
+                i["Passenger"] = None 
+            
+
         for i in dic:
             if i["Seat"] == to_seat:
-                i["Passenger"] = passenger
+                i["Passenger"] = pasajero
                 break
         
 
