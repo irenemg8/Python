@@ -5,12 +5,9 @@ class Passenger:
         Attributes:
             name (str): El nombre de la persona
             surname (str): El apellido de la persona
-            id_card (int): El id de identificación del pasajero
+            id_card (str): El id de identificación del pasajero
 
         Methods:
-            get_name(): Devuelve el nombre del pasajero
-            get_surname(): Devuelve el apellido del pasajero
-            get_id_card(): Devuelve el id de identificación del pasajero
             passenger_data(): Muestra los datos del pasajero (name, surname, id_card) en formato tupla
     """
     
@@ -20,35 +17,11 @@ class Passenger:
         Args:
             name (str): El nombre de la persona
             surname (str): El apellido de la persona
-            id_card (int): El id de identificación del pasajero
+            id_card (str): El id de identificación del pasajero
         """
         self.__name = name
         self.__surname = surname
         self.__id_card = id_card
-
-
-    def get_name(self):
-        """ Esta función devuelve el nombre del pasajero
-            Returns:
-                string: El nombre del pasajero
-        """
-        return self.__name
-
-
-    def get_surname(self):
-        """ Esta función devuelve el apellido del pasajero
-            Returns:
-                string: El apellido del pasajero
-        """
-        return self.__surname
-
-
-    def get_id_card(self):
-        """ Esta función devuelve el id de identificación del pasajero
-            Returns:
-                string: El id del pasajero
-        """
-        return self.__id_card
 
 
     def passenger_data(self):

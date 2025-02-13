@@ -3,23 +3,58 @@ from passenger import *
 from aircraft import *
 
 class Flight:
+    """ Representación de un vuelo
+        Attributes:
+            number (str): Número de vuelo
+            aircraft (Aircraft): Modelo de avión
+            seating (list): Lista de diccionarios con la información de los asientos
 
-    #Constructor
-    def __init__(self, number, aircraft, seating):    
+        Methods:
+            get_number(): Devuelve el número de vuelo
+            get_aircraft_model(): Devuelve el modelo de avión
+            get_seating(): Devuelve la lista de asientos
+            allocate_passenger(seat, passenger): Asigna un asiento a un pasajero
+            reallocate_passenger(from_seat, to_seat): Reasigna un pasajero a un asiento diferente
+            num_available_seats(): Devuelve el número de asientos disponibles
+            print_seating(): Imprime en consola el plan de asientos
+            print_boarding_cards(): Imprime en consola la tarjeta de embarque de cada pasajero
+            __parse_seat(seat): Divide un designador de asiento en fila y letra
+            __passenger_seats(): Generador para iterar las ubicaciones de asientos ocupadas
+    """
+    
+    def __init__(self, number, aircraft):    
+        """ Inicializa un vuelo con su número y modelo de avión
+        Args:
+            number (str): Número de vuelo
+            aircraft (Aircraft): Modelo de avión
+        """
         self.__number = number
         self.__aircraft = aircraft
-        self.__seating = seating 
+        rows, seats = self.__aircraft.seating_plan()
+        self.__seating = [{"Seat": f"{row}{seat}", "Passenger": None} for row in range(1, len(rows)) for seat in seats]
 
 
     def get_number(self):
+        """ Esta función devuelve el número de vuelo
+            Returns:
+                string: Número de vuelo
+        """
         return self.__number
     
     
     def get_aircraft_model(self):
+        """ Esta función devuelve el modelo de avión
+            Returns:
+                string: modelo de avión
+        """
         return self.__aircraft
     
 
     def get_seating(self):
+        """ Esta función devuelve la lista de asientos
+            Returns:
+                list: lista de asientos
+        """
         return self.__seating
     
 
@@ -31,7 +66,7 @@ class Flight:
         """
         dic = self.get_seating()
         for i in dic:
-            if i["Seat"] == seat:
+            if (seat is not None ) and (i["Seat"] == seat):
                 i["Passenger"] = passenger
 
 
@@ -40,11 +75,19 @@ class Flight:
         Args:
             from_seat: The existing seat designator for the passenger such as '12C'
             to_seat: The new seat designator
-            """
+        """
         dic = self.get_seating()
+        pasajero = None
         for i in dic:
-            if i["Seat"] == from_seat:
-                 i["Seat"] = to_seat
+            if (i["Seat"] == from_seat) and (to_seat == None):
+                pasajero = i["Passenger"]
+                i["Passenger"] = None 
+            
+
+        for i in dic:
+            if i["Seat"] == to_seat:
+                i["Passenger"] = pasajero
+                break
         
 
     def num_available_seats(self):
@@ -81,7 +124,7 @@ class Flight:
         for i in dic:
             if i["Passenger"] != None:
                 print("----------------------------------------------------------")
-                print("|     ", i["Passenger"][0], i["Passenger"][1], i["Passenger"][2], i["Seat"], self.get_number(), self.get_aircraft_model(), "     |")
+                print("|     ", i["Passenger"][0], i["Passenger"][1], i["Passenger"][2], i["Seat"], self.get_number(), self.get_aircraft_model().get_model(), "     |")
                 print("----------------------------------------------------------")
     
 
@@ -106,4 +149,3 @@ class Flight:
         dic = self.get_seating()
         for i in dic:
             yield (i["Passenger"], i["Seat"])
-            
