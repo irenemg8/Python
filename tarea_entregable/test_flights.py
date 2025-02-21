@@ -1,143 +1,75 @@
-import flight as f
-"""
-# Test de creación de vuelo
-def test_create_flight1():
-    f1 = f.Flight(number = "BA117", aircraft = f.Aircraft(registration = "G-EUAH", model = "Airbus A319", num_rows = 22, num_seats_per_row=6))
+import pytest
+from aircraft import Aircraft, Airbus, Boeing
+from passenger import Passenger
+from flight import Flight
+
+def test_creacion_objetos_flight():
+    """
+    Prueba la creación de objetos Flight.
+    """
+    f1 = Flight(number="BA117", aircraft=Aircraft(registration="G-EUAH", model="Airbus A319", num_rows=22, num_seats_per_row=6))
     assert f1.get_number() == "BA117"
-    assert f1.get_aircraft_model().get_registration() == "G-EUAH"
     assert f1.get_aircraft_model().get_model() == "Airbus A319"
-    assert f1.get_aircraft_model().get_num_rows() == 22
-    assert f1.get_aircraft_model().get_num_seats_per_row() == 6
 
-def test_create_flight2():
-    f2 = f.Flight(number = "AF92", aircraft = f.Boeing(registration = "F-GSPS", airline = "Emirates"))
+    f2 = Flight(number="AF92", aircraft=Boeing(registration="F-GSPS", airline="Emirates"))
     assert f2.get_number() == "AF92"
-    assert f2.get_aircraft_model().get_registration() == "F-GSPS"
-    assert f2.get_aircraft_model().get_airline() == "Emirates"
+    assert f2.get_aircraft_model().get_model() == "Boeing 777"
 
-def test_create_flight3():
-    f3 = f.Flight(number = "BA148", aircraft = f.Airbus(registration = "G-EUPT", variant = "A319-100"))
+    f3 = Flight(number="BA148", aircraft=Airbus(registration="G-EUPT", variant="A319-100"))
     assert f3.get_number() == "BA148"
-    assert f3.get_aircraft_model().get_registration() == "G-EUPT"
     assert f3.get_aircraft_model().get_variant() == "A319-100"
 
-# Test de asignación de pasajeros
-def test_allocate_passenger1():
-    f1 = f.Flight(number = "BA117", aircraft = f.Aircraft(registration = "G-EUAH", model = "Airbus A319", num_rows = 22, num_seats_per_row=6))
-    p1 = f.Passenger("Jack", "Shephard", "85994003S")
+def test_allocate_passenger():
+    """
+    Prueba la asignación de pasajeros a los asientos.
+    """
+    f1 = Flight(number="BA117", aircraft=Aircraft(registration="G-EUAH", model="Airbus A319", num_rows=22, num_seats_per_row=6))
+    p1 = Passenger("Jack", "Shephard", "85994003S")
     f1.allocate_passenger("12A", p1.passenger_data())
-    assert f1.get_seating()[0]["Passenger"] == p1.passenger_data()
+    assert any(seat["Seat"] == "12A" and seat["Passenger"] == p1.passenger_data() for seat in f1.get_seating())
 
-def test_allocate_passenger2():
-    f1 = f.Flight(number = "BA117", aircraft = f.Aircraft(registration = "G-EUAH", model = "Airbus A319", num_rows = 22, num_seats_per_row=6))
-    p1 = f.Passenger("Jack", "Shephard", "85994003S")
-    f1.allocate_passenger("12A", p1.passenger_data())
-    p2 = f.Passenger("Kate", "Austen", "12589756P")
+    p2 = Passenger("Kate", "Austen", "12589756P")
     f1.allocate_passenger("12B", p2.passenger_data())
-    assert f1.get_seating()[0]["Passenger"] == p1.passenger_data()
-    assert f1.get_seating()[1]["Passenger"] == p2.passenger_data()
+    assert any(seat["Seat"] == "12B" and seat["Passenger"] == p2.passenger_data() for seat in f1.get_seating())
 
-# Test de reasignación de pasajeros
-def test_reallocate_passenger1():
-    f1 = f.Flight(number = "BA117", aircraft = f.Aircraft(registration = "G-EUAH", model = "Airbus A319", num_rows = 22, num_seats_per_row=6))
-    p1 = f.Passenger("Jack", "Shephard", "85994003S")
+def test_reallocate_passenger():
+    """
+    Prueba la reasignación de pasajeros a diferentes asientos.
+    """
+    f1 = Flight(number="BA117", aircraft=Aircraft(registration="G-EUAH", model="Airbus A319", num_rows=22, num_seats_per_row=6))
+    p1 = Passenger("Jack", "Shephard", "85994003S")
     f1.allocate_passenger("12A", p1.passenger_data())
-    p2 = f.Passenger("Kate", "Austen", "12589756P")
-    f1.reallocate_passenger("12A", "12B")
-    assert f1.get_seating()[0]["Passenger"] == None
-    assert f1.get_seating()[1]["Passenger"] == p1.passenger_data()
-
-def test_reallocate_passenger2():
-    f1 = f.Flight(number = "BA117", aircraft = f.Aircraft(registration = "G-EUAH", model = "Airbus A319", num_rows = 22, num_seats_per_row=6))
-    p1 = f.Passenger("Jack", "Shephard", "85994003S")
-    f1.allocate_passenger("12A", p1.passenger_data())
-    p2 = f.Passenger("Kate", "Austen", "12589756P")
-    f1.allocate_passenger("12B", p2.passenger_data())
-    f1.reallocate_passenger("12A", "12B")
-    assert f1.get_seating()[0]["Passenger"] == None
-    assert f1.get_seating()[1]["Passenger"] == p1.passenger_data()
-
-# Test de número de asientos disponibles
-def test_num_seats_available1():
-    f1 = f.Flight(number = "BA117", aircraft = f.Aircraft(registration = "G-EUAH", model = "Airbus A319", num_rows = 22, num_seats_per_row=6))
-    p1 = f.Passenger("Jack", "Shephard", "85994003S")
-    f1.allocate_passenger("12A", p1.passenger_data())
-    assert f1.num_available_seats() == 131
-
-    p2 = f.Passenger("Kate", "Austen", "12589756P")
-    f1.allocate_passenger("12B", p2.passenger_data())
-    assert f1.num_available_seats() == 130
-
-    f1.reallocate_passenger("12A", "12B")
-    assert f1.num_available_seats() == 131
-
-    f1.reallocate_passenger("12B", "12A")
-    assert f1.num_available_seats() == 130
-
-    f1.allocate_passenger("12A", p1.passenger_data())
-    f1.allocate_passenger("12B", p2.passenger_data())
-    assert f1.num_available_seats() == 129
-
-    f1.reallocate_passenger("12A", "12B")
-    f1.reallocate_passenger("12B", "12A")
-    assert f1.num_available_seats() == 129
-
-def test_num_seats_available2():
-    f2 = f.Flight(number = "AF92", aircraft = f.Boeing(registration = "F-GSPS", airline = "Emirates"))
-    p1 = f.Passenger("Jack", "Shephard", "85994003S")
-    f2.allocate_passenger("12A", p1.passenger_data())
-    assert f2.num_available_seats() == 0
-
-    p2 = f.Passenger("Kate", "Austen", "12589756P")
-    f2.allocate_passenger("12B", p2.passenger_data())
-    assert f2.num_available_seats() == 0
-
-    f2.reallocate_passenger("12A", "12B")
-    assert f2.num_available_seats() == 0
-
-    f2.reallocate_passenger("12B", "12A")
-    assert f2.num_available_seats() == 0
-
-    f2.allocate_passenger("12A", p1.passenger_data())
-    f2.allocate_passenger("12B", p2.passenger_data())
-    assert f2.num_available_seats() == 0"""
-
-
-
-def test_allocate_passenger1():
-    f1 = f.Flight(number="BA117", aircraft=f.Aircraft(registration="G-EUAH", model="Airbus A319", num_rows=22, num_seats_per_row=6))
-    p1 = f.Passenger("Jack", "Shephard", "85994003S")
-    f1.allocate_passenger("12A", {"first_name": "Jack", "last_name": "Shephard", "passport_number": "85994003S"})
-    assert f1.get_seating()[0]["Passenger"] == {"first_name": "Jack", "last_name": "Shephard", "passport_number": "85994003S"}
-
-def test_allocate_passenger2():
-    f1 = f.Flight(number="BA117", aircraft=f.Aircraft(registration="G-EUAH", model="Airbus A319", num_rows=22, num_seats_per_row=6))
-    p1 = f.Passenger("Jack", "Shephard", "85994003S")
-    f1.allocate_passenger("12A", {"first_name": "Jack", "last_name": "Shephard", "passport_number": "85994003S"})
-    p2 = f.Passenger("Kate", "Austen", "12589756P")
-    f1.allocate_passenger("12B", {"first_name": "Kate", "last_name": "Austen", "passport_number": "12589756P"})
-    assert f1.get_seating()[0]["Passenger"] == {"first_name": "Jack", "last_name": "Shephard", "passport_number": "85994003S"}
-    assert f1.get_seating()[1]["Passenger"] == {"first_name": "Kate", "last_name": "Austen", "passport_number": "12589756P"}
-
-def test_reallocate_passenger1():
-    f1 = f.Flight(number="BA117", aircraft=f.Aircraft(registration="G-EUAH", model="Airbus A319", num_rows=22, num_seats_per_row=6))
-    p1 = f.Passenger("Jack", "Shephard", "85994003S")
-    f1.allocate_passenger("12A", {"first_name": "Jack", "last_name": "Shephard", "passport_number": "85994003S"})
-    p2 = f.Passenger("Kate", "Austen", "12589756P")
-    f1.allocate_passenger("12B", {"first_name": "Kate", "last_name": "Austen", "passport_number": "12589756P"})
-    f1.reallocate_passenger("12A", "12C")  # Cambiar a un asiento vacío
-    assert f1.get_seating()[0]["Passenger"] == None
-    assert f1.get_seating()[2]["Passenger"] == {"first_name": "Jack", "last_name": "Shephard", "passport_number": "85994003S"}
-
-def test_num_seats_available1():
-    f1 = f.Flight(number="BA117", aircraft=f.Aircraft(registration="G-EUAH", model="Airbus A319", num_rows=22, num_seats_per_row=6))
-    p1 = f.Passenger("Jack", "Shephard", "85994003S")
-    f1.allocate_passenger("12A", {"first_name": "Jack", "last_name": "Shephard", "passport_number": "85994003S"})
-    assert f1.num_available_seats() == 131
-    p2 = f.Passenger("Kate", "Austen", "12589756P")
-    f1.allocate_passenger("12B", {"first_name": "Kate", "last_name": "Austen", "passport_number": "12589756P"})
-    assert f1.num_available_seats() == 130
+    assert any(seat["Seat"] == "12C" and seat["Passenger"] is None for seat in f1.get_seating())
     f1.reallocate_passenger("12A", "12C")
-    assert f1.num_available_seats() == 131
+    assert any(seat["Seat"] == "12A" and seat["Passenger"] is None for seat in f1.get_seating())
+    assert any(seat["Seat"] == "12C" and seat["Passenger"] == p1.passenger_data() for seat in f1.get_seating())
+
+    p2 = Passenger("Kate", "Austen", "12589756P")
+    f1.allocate_passenger("12B", p2.passenger_data())
+    assert any(seat["Seat"] == "12D" and seat["Passenger"] is None for seat in f1.get_seating())
+    f1.reallocate_passenger("12B", "12D")
+    assert any(seat["Seat"] == "12B" and seat["Passenger"] is None for seat in f1.get_seating())
+    assert any(seat["Seat"] == "12D" and seat["Passenger"] == p2.passenger_data() for seat in f1.get_seating())
+
+def test_num_available_seats():
+    """
+    Prueba el número de asientos disponibles.
+    """
+    f1 = Flight(number="BA117", aircraft=Aircraft(registration="G-EUAH", model="Airbus A319", num_rows=22, num_seats_per_row=6))
+    assert f1.num_available_seats() == 22 * 6
+    p1 = Passenger("Jack", "Shephard", "85994003S")
+    f1.allocate_passenger("12A", p1.passenger_data())
+    assert f1.num_available_seats() == 22 * 6 - 1
+
+    p2 = Passenger("Kate", "Austen", "12589756P")
+    f1.allocate_passenger("12B", p2.passenger_data())
+    assert f1.num_available_seats() == 22 * 6 - 2
+
+    f1.reallocate_passenger("12A", "12C")
+    assert f1.num_available_seats() == 22 * 6 - 2
+
     f1.reallocate_passenger("12B", "12A")
-    assert f1.num_available_seats() == 130
+    assert f1.num_available_seats() == 22 * 6 - 2
+
+if __name__ == "__main__":
+    pytest.main()

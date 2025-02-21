@@ -107,9 +107,6 @@ class Flight:
         if len(to_seat) < 2:
             raise ValueError("El asiento debe tener al menos 2 caracteres (un número y una letra).")
         
-        if to_seat is not None:
-            raise ValueError("El sitio destino debe estar vacío.")
-        
         if from_seat is None:
             raise ValueError("El sitio origen no debe estar vacío, debe tener al pasajero que queremos mover de sitio.")
         
@@ -120,13 +117,18 @@ class Flight:
         dic = self.get_seating()
         pasajero = None
         for i in dic:
-            if (i["Seat"] == from_seat) and (to_seat == None):
+            if i["Seat"] == from_seat:
                 pasajero = i["Passenger"]
                 i["Passenger"] = None 
-            
+                break
+
+        if pasajero is None:
+            raise ValueError(f"No hay pasajero en el asiento {from_seat}")
 
         for i in dic:
             if i["Seat"] == to_seat:
+                if i["Passenger"] is not None:
+                    raise ValueError("El sitio destino debe estar vacío.")
                 i["Passenger"] = pasajero
                 break
         
