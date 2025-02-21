@@ -28,6 +28,20 @@ class Flight:
             number (str): Número de vuelo
             aircraft (Aircraft): Modelo de avión
         """
+        """------ Excepciones ------"""
+        if not number[:2].isalpha():
+            raise ValueError("Los dos primeros caracteres deben ser letras")
+        
+        if not number[:2].isupper():
+            raise ValueError("Los dos primeros caracteres deben ser mayúsculas")
+        
+        if not number[2:].isdigit():
+            raise ValueError("Todos los caracteres a partir del tercero deben ser números")
+        
+        if int(number[2:]) > 9999:
+            raise ValueError("Los caracteres a partir del tercero exceden el 9999")
+        """-------------------------"""
+
         self.__number = number
         self.__aircraft = aircraft
         rows, seats = self.__aircraft.seating_plan()
@@ -64,6 +78,18 @@ class Flight:
             seat: A seat designator such as '12C' or '21F'
             passenger: The passenger data such as ('Jack', 'Shephard', '85994003S')
         """
+
+        """------ Excepciones ------"""
+        if len(seat) < 2:
+            raise ValueError("El asiento debe tener al menos 2 caracteres (un número y una letra).")
+        
+        if seat is None:
+            raise ValueError("El asiento no debe estar vacío.")
+        
+        if passenger is None:
+            raise ValueError("El pasajero no debe estar vacío.")
+        """-------------------------"""
+
         dic = self.get_seating()
         for i in dic:
             if (seat is not None ) and (i["Seat"] == seat):
@@ -76,6 +102,21 @@ class Flight:
             from_seat: The existing seat designator for the passenger such as '12C'
             to_seat: The new seat designator
         """
+
+        """------ Excepciones ------"""
+        if len(to_seat) < 2:
+            raise ValueError("El asiento debe tener al menos 2 caracteres (un número y una letra).")
+        
+        if to_seat is not None:
+            raise ValueError("El sitio destino debe estar vacío.")
+        
+        if from_seat is None:
+            raise ValueError("El sitio origen no debe estar vacío, debe tener al pasajero que queremos mover de sitio.")
+        
+        if from_seat == to_seat:    
+            raise ValueError("El asiento de origen y el de destino no pueden ser iguales.")
+        """-------------------------"""
+
         dic = self.get_seating()
         pasajero = None
         for i in dic:
@@ -128,7 +169,7 @@ class Flight:
                 print("----------------------------------------------------------")
     
 
-    def parse_seat(self, seat):
+    def __parse_seat(self, seat):
         """Divide a seat designator in row and letter
             Args:
                 seat: The seat designator to be divided such as '12C'
@@ -136,12 +177,27 @@ class Flight:
                 row: The row of the seat such as 12
                 letter: The letter of the seat such as 'C'
         """
+
+        """------ Excepciones ------"""
+        if len(seat) < 2:
+            raise ValueError("El asiento debe tener al menos 2 caracteres (un número y una letra).")
+
+        if (not seat[-1].isalpha()) or (seat[-1].upper() not in self.get_aircraft_model().seating_plan()[1]):   #Recordatorio: seating_plan() devuelve (rows, seats)  ->  0 = rows, 1 = seats
+            raise ValueError("El último caracter debe ser una letra y debe ser una letra válida para el Aircraft que tenga asociado este vuelo.")
+        
+        if not seat[:-1].isdigit():
+            raise ValueError("Todos los caracteres excepto el último deben ser números")
+        
+        if int(seat[:-1]) > self.get_aircraft_model().seating_plan()[0]:   #Recordatorio: seating_plan() devuelve (rows, seats)  ->  0 = rows, 1 = seats
+            raise ValueError("El número que forman estos caracteres debe ser un valor de fila válido para el `Aircraft` que tenga asociado este vuelo.")
+        """-------------------------"""
+
         row = seat[:-1]
         letter = seat[-1]
         return row, letter
         
 
-    def passenger_seats(self):
+    def __passenger_seats(self):
         """A generator function to iterate the occupied seating locations
             Returns:
             generator: Tuple of the passenger data and the seat
